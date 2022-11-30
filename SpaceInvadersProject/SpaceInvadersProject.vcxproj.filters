@@ -13,8 +13,8 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\texture">
-      <UniqueIdentifier>{c5f2d931-8908-4f33-8cc4-1b404abd2340}</UniqueIdentifier>
+    <Filter Include="Resource Files\texture">
+      <UniqueIdentifier>{502882f9-d43e-42fe-8078-2397bbebd0bc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -39,7 +39,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="zoroark.png">
+    <Image Include="zoro.png">
       <Filter>Source Files</Filter>
     </Image>
   </ItemGroup>

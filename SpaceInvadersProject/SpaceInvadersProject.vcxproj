@@ -166,7 +166,7 @@
     <ClInclude Include="shaders.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="zoroark.png" />
+    <Image Include="zoro.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
