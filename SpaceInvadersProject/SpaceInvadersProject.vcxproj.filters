@@ -72,7 +72,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="zoro.png">
+    <Image Include="textures\zoro.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
   </ItemGroup>

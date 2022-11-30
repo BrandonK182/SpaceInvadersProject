@@ -2,7 +2,6 @@
 #include<iostream>
 #include<glad/glad.h>
 #include<GLFW/glfw3.h>
-//#include<SOIL2/SOIL2.h>
 #include<glm/glm.hpp>
 #include<glm/gtc/matrix_transform.hpp>
 #include<glm/gtc/type_ptr.hpp>
@@ -106,7 +105,7 @@ int main()
 	GLuint uniID = glGetUniformLocation(ourShader.ID, "scale");
 
 	//Textures
-	Texture zoroark("zoro.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture zoroark("textures/zoro.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	zoroark.texUnit(ourShader, "tex0",0);
 
 	//Main while loop
@@ -120,26 +119,19 @@ int main()
 		//glUseProgram(shaderProgram);
 		ourShader.Activate();
 
+		glm::mat4 transform = glm::mat4(1.0f);
+		transform = glm::translate(transform, glm::vec3(0.5f, 0.25f, 0.0f));
+																	//axis of rotation
+		transform = glm::rotate(transform, (GLfloat)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		GLint transformLocation = glGetUniformLocation(ourShader.ID, "transform");
+		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
+
 		//input reading
 		inputs(window);
 
 		glUniform1f(uniID, 0.0f);
 		zoroark.Bind();
-
-		/*
-		//transformation (aka moving)
-		glm::mat4 transform;
-		transform = glm::translate(transform, glm::vec3(0.5f, -0.5f, 0.0f));
-		transform = glm::rotate(transform,(GLfloat)glfwGetTime() *-5.0f,  glm::vec3(0.0f, 0.0f, 1.0f));
-
-		GLint transformLocation = glGetUniformLocation(ourShader.ID, "transform");
-
-		glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
-
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glUniform1i(glGetUniformLocation(ourShader.ID, "ourTexture"), 0);
-		*/
 
 		VAO1.Bind();
 
