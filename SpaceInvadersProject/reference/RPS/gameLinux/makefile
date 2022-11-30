@@ -1,0 +1,2 @@
+main: main.cpp VertexBuffer.cpp IndexBuffer.cpp VertexArray.cpp Shader.cpp Texture.cpp Renderer.cpp VertexBuffer.h IndexBuffer.h VertexArray.h VertexBufferLayout.h Shader.h Texture.h Renderer.h
+	g++ -Wall -DUSEGLEW -o main main.cpp VertexBuffer.cpp IndexBuffer.cpp VertexArray.cpp Shader.cpp Texture.cpp Renderer.cpp -lglfw -lGLEW -lGLU -lSOIL -lGL -lm
