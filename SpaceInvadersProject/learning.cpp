@@ -12,23 +12,24 @@
 #include "VAO.h"
 #include "VBO.h"
 #include "EBO.h"
+#include "texture.h"
 
 int screenWidth = 800, screenHeight = 600;
 
 //keys and their associated functions
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void inputs(GLFWwindow* window)
 {
-	if (key == GLFW_KEY_A && action == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
 		//move left
 		std::cout << "moving left" << std::endl;
 	}
 
-	if (key == GLFW_KEY_D && action == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
 		//move right
 		std::cout << "moving right" << std::endl;
 	}
 
-	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
 		//shoot
 		std::cout << "shoot" << std::endl;
 	}
@@ -48,20 +49,17 @@ int main()
 	// //every 3 floats represent a coordinate
 	//coordinates can be anything between -1 and 1
 	GLfloat vertices[] =
-	{	//position										//color						//texture coordinates
-		-0.5f, -0.5f * float(sqrt(3))/3, 0.0f,			0.8f,0.3f,0.02f,
-		0.5f, -0.5f * float(sqrt(3))/3, 0.0f,			0.8f,0.3f,0.02f,
-		0.0f, 0.5f * float(sqrt(3))*2/3, 0.0f,			1.0f,0.6f,0.32f,
-		-0.5f/2, 0.5f*float(sqrt(3))/6,0.0f,			0.9f,0.45f,0.17f,
-		0.5f / 2, 0.5f * float(sqrt(3)) / 6,0.0f,		0.9f,0.45f,0.17f,
-		0.0f, -0.5f * float(sqrt(3)) / 3,0.0f,			0.8f,0.3f,0.02f
+	{	//position					//color						//texture coordinates
+		-0.5f, 0.5f, 0.0f,			0.2f,0.5f,0.82f,			0.0f, 1.0f,	//top left
+		-0.5f, -0.5f, 0.0f,			0.25f,0.6f,0.9f,			0.0f, 0.0f,	//bottom left
+		0.5f, 0.5f, 0.0f,			0.2f,0.5f,0.82f,			1.0f, 1.0f,	//top right
+		0.5f, -0.5f,0.0f,			0.25f,0.6f,0.9f,			1.0f, 0.0f	//bottom right
 	};
 
 	GLuint indices[] =
 	{
-		0,3,5,		//first triangle
-		3,4,2,
-		5,4,1
+		1,2,3,
+		0,1,2
 	};
 
 	//creates window object in 800x600 pixels
@@ -97,8 +95,9 @@ int main()
 	VBO VBO1(vertices, sizeof(vertices));
 	EBO EBO1(indices, sizeof(indices));
 	
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3*sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 2, 3, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
 	VAO1.Unbind();
 	VBO1.Unbind();
@@ -106,25 +105,9 @@ int main()
 
 	GLuint uniID = glGetUniformLocation(ourShader.ID, "scale");
 
-	/*
 	//Textures
-	int widthImg, heightImg, numColCh;
-
-	unsigned char* image = stbi_load("zoro.png", &widthImg, &heightImg, 0, 0);
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	*/
+	Texture zoroark("zoro.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	zoroark.texUnit(ourShader, "tex0",0);
 
 	//Main while loop
 	//closes when window is closed
@@ -137,7 +120,11 @@ int main()
 		//glUseProgram(shaderProgram);
 		ourShader.Activate();
 
+		//input reading
+		inputs(window);
+
 		glUniform1f(uniID, 0.0f);
+		zoroark.Bind();
 
 		/*
 		//transformation (aka moving)
@@ -159,7 +146,7 @@ int main()
 		//draws triangle 
 		//glDrawArrays(GL_TRIANGLES, 0, 3); //replaced with next line
 		//data, number of indicies, datatype, index
-		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 
 		//updates GLFW
@@ -170,7 +157,7 @@ int main()
 	VBO1.Delete();
 	EBO1.Delete();
 	ourShader.Delete();
-	//glDeleteTextures(1, &texture);
+	zoroark.Delete();
 
 	//closes window when program ends
 	glfwDestroyWindow(window);
