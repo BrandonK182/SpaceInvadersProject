@@ -3,23 +3,27 @@
 #include "SpriteRenderer.h"
 
 #include <iostream>
+#include <vector>
 
 // Game-related State data
 SpriteRenderer* Renderer;
 GameObject* Player;
 GameObject* Enemy;
+std::vector<GameObject*> enemies;
 const glm::vec2 PLAYER_SIZE(100.0f, 20.0f);
 const glm::vec2 ENEMY_SIZE(75.0f, 75.0f);
 const float PLAYER_VELOCITY(500.0f);
 const static int numRows = 10;
-const static int numCols = 3;
+const static int numCols = 10;
+const static int numEnemiesPerRow = 4;
+const static int numEnemyRows = 3;
 float timer = 500;
 int direction = 2;
 //1 = left
 //2 = right
 //3 = down heading left
 //4 = down heading right
-bool enemies[numRows][numCols];
+bool enemiesAlive[numRows][numCols];
 
 Game::Game(unsigned int width, unsigned int height)
     : State(GAME_ACTIVE), Keys(), Width(width), Height(height)
@@ -35,11 +39,11 @@ Game::~Game()
 void Game::Init()
 {
     //sets all values to empty
-    for (int row = 0; row < 15; row++)
+    for (int row = 0; row < numRows; row++)
     {
-        for (int col = 0; col < 12; col++)
+        for (int col = 0; col < numCols; col++)
         {
-            enemies[row][col] = 0;
+            enemiesAlive[row][col] = 0;
         }
     }
 
@@ -71,6 +75,17 @@ void Game::Init()
         this->Height -600.0f
     );
     Enemy = new GameObject(enemyPos, ENEMY_SIZE, ResourceManager::GetTexture("enemy"));
+
+    for (int i = 0; i < numEnemyRows; i++)
+    {
+        for (int j = 0; j < numEnemiesPerRow; j++)
+        {
+            enemies.push_back(new GameObject(enemyPos, ENEMY_SIZE, ResourceManager::GetTexture("enemy")));
+            enemyPos.x += ENEMY_SIZE.x;
+        }
+        enemyPos.x = 0.0f;
+        enemyPos.y += 50.0f;
+    }
 }
 
 void Game::Update(float dt)
@@ -80,6 +95,10 @@ void Game::Update(float dt)
         switch(direction)
         {
         case 1:
+            for (int i = 0; i < enemies.size(); i++)
+            {
+                enemies[i]->Position.x -= dt * 50;
+            }
             Enemy->Position.x -= dt * 50;
             if (timer < 0)
             {
@@ -88,6 +107,10 @@ void Game::Update(float dt)
             }
             break;
         case 2:
+            for (int i = 0; i < enemies.size(); i++)
+            {
+                enemies[i]->Position.x += dt * 50;
+            }
             Enemy->Position.x += dt * 50;
             if (timer < 0)
             {
@@ -96,6 +119,10 @@ void Game::Update(float dt)
             }
             break;
         case 3:
+            for (int i = 0; i < enemies.size(); i++)
+            {
+                enemies[i]->Position.y += dt * 100;
+            }
             Enemy->Position.y += dt * 100;
             if (timer < 0)
             {
@@ -104,6 +131,10 @@ void Game::Update(float dt)
             }
             break;
         case 4:
+            for (int i = 0; i < enemies.size(); i++)
+            {
+                enemies[i]->Position.y += dt * 100;
+            }
             Enemy->Position.y += dt * 100;
             if (timer < 0)
             {
@@ -138,9 +169,10 @@ void Game::ProcessInput(float dt)
 
 void Game::Render()
 {
-    Texture2D myTexture;
-    myTexture = ResourceManager::GetTexture("player");
-    myTexture = ResourceManager::GetTexture("enemy");
     Player->Draw(*Renderer);
     Enemy->Draw(*Renderer);
+    for (int i = 0; i < enemies.size(); i++)
+    {
+        enemies[i]->Draw(*Renderer);
+    }
 }
