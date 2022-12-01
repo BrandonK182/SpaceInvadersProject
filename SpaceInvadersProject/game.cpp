@@ -17,12 +17,16 @@ const static int numRows = 10;
 const static int numCols = 10;
 const static int numEnemiesPerRow = 4;
 const static int numEnemyRows = 3;
+static int remaining = numEnemiesPerRow * numEnemyRows;
+const static float cooldownLength = 25;
+float cooldown = 0;
 float timer = 500;
 int direction = 2;
 //1 = left
 //2 = right
 //3 = down heading left
 //4 = down heading right
+int playerLives = 1;
 bool enemiesAlive[numRows][numCols];
 
 Game::Game(unsigned int width, unsigned int height)
@@ -74,7 +78,6 @@ void Game::Init()
         0.0f,
         this->Height -600.0f
     );
-    Enemy = new GameObject(enemyPos, ENEMY_SIZE, ResourceManager::GetTexture("enemy"));
 
     for (int i = 0; i < numEnemyRows; i++)
     {
@@ -99,7 +102,6 @@ void Game::Update(float dt)
             {
                 enemies[i]->Position.x -= dt * 50;
             }
-            Enemy->Position.x -= dt * 50;
             if (timer < 0)
             {
                 direction = 4;
@@ -111,7 +113,6 @@ void Game::Update(float dt)
             {
                 enemies[i]->Position.x += dt * 50;
             }
-            Enemy->Position.x += dt * 50;
             if (timer < 0)
             {
                 direction = 3;
@@ -123,7 +124,6 @@ void Game::Update(float dt)
             {
                 enemies[i]->Position.y += dt * 100;
             }
-            Enemy->Position.y += dt * 100;
             if (timer < 0)
             {
                 direction = 1;
@@ -135,7 +135,6 @@ void Game::Update(float dt)
             {
                 enemies[i]->Position.y += dt * 100;
             }
-            Enemy->Position.y += dt * 100;
             if (timer < 0)
             {
                 direction = 2;
@@ -144,8 +143,26 @@ void Game::Update(float dt)
             break;
         }
         timer -= dt * 50;
-        
+        if (cooldown > 0)
+        {
+            cooldown -= dt * 50;
+        }
+
+        if (remaining <= 0)
+        {
+            this->State = GAME_WIN;
+            std::cout << "trigger" << std::endl;
+        }
+        if (playerLives <= 0)
+        {
+            this->State = GAME_LOSE;
+        }
     }
+    if (this->State == GAME_ACTIVE)
+    {
+
+    }
+
 }
 
 void Game::ProcessInput(float dt)
@@ -164,15 +181,74 @@ void Game::ProcessInput(float dt)
             if (Player->Position.x <= this->Width - Player->Size.x)
                 Player->Position.x += velocity;
         }
+        if (this->Keys[GLFW_KEY_SPACE])
+        {
+            float playerCenter = Player->Position.x + (PLAYER_SIZE.x / 2);
+            bool contact = false;
+            for (int i = enemies.size()-1; i >= 0; i--)
+            {
+                if (playerCenter > enemies[i]->Position.x && playerCenter < enemies[i]->Position.x + ENEMY_SIZE.x)
+                {
+                    if (!enemies[i]->Destroyed && !contact && cooldown <= 0)
+                    {
+                        enemies[i]->Destroyed = true;
+                        remaining -= 1;
+                        contact = true;
+                        i = -1;
+                    }
+                }
+            }
+            if(cooldown <= 0)
+                cooldown = cooldownLength;
+        }
+    }
+    if (this->State == GAME_WIN)
+    {
+        if (this->Keys[GLFW_KEY_ENTER])
+        {
+            this->State = GAME_ACTIVE;
+            remaining = numEnemiesPerRow * numEnemyRows;
+            cooldown = 0;
+            timer = 500;
+            direction = 2;
+            playerLives = 1;
+            glm::vec2 enemyPos = glm::vec2(
+                0.0f,
+                this->Height - 600.0f
+            );
+            int itr = 0;
+            for (int i = 0; i < numEnemyRows; i++)
+            {
+                for (int j = 0; j < numEnemiesPerRow; j++)
+                {
+                    enemies[itr]->Position = enemyPos;
+                    enemies[itr]->Destroyed = false;
+                    enemyPos.x += ENEMY_SIZE.x;
+                    itr++;
+                }
+                enemyPos.x = 0.0f;
+                enemyPos.y += 50.0f;
+            }
+        }
+    }
+    if (this->State == GAME_LOSE)
+    {
+        if (this->Keys[GLFW_KEY_ENTER])
+        {
+            this->State = GAME_ACTIVE;
+        }
     }
 }
 
 void Game::Render()
 {
-    Player->Draw(*Renderer);
-    Enemy->Draw(*Renderer);
-    for (int i = 0; i < enemies.size(); i++)
+    if (this->State == GAME_ACTIVE)
     {
-        enemies[i]->Draw(*Renderer);
+        Player->Draw(*Renderer);
+        for (int i = 0; i < enemies.size(); i++)
+        {
+            if (!enemies[i]->Destroyed)
+                enemies[i]->Draw(*Renderer);
+        }
     }
 }
