@@ -93,5 +93,11 @@
     <Image Include="textures\trainer.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="winscreen.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="losescreen.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

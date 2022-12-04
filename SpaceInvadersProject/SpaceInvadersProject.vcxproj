@@ -72,8 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Brandon\source\repos\SpaceInvadersProject\SpaceInvadersProject\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Brandon\source\repos\SpaceInvadersProject\SpaceInvadersProject\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\drbat\source\repos\newspace\SpaceInvadersProject\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\drbat\source\repos\newspace\SpaceInvadersProject\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -82,8 +82,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Brandon\source\repos\SpaceInvadersProject\SpaceInvadersProject\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Brandon\source\repos\SpaceInvadersProject\SpaceInvadersProject\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\drbat\source\repos\newspace\SpaceInvadersProject\Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\drbat\source\repos\newspace\SpaceInvadersProject\Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -102,7 +102,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;soil2-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Brandon\source\repos\SpaceInvadersProject\SpaceInvadersProject\Libraries\lib;$(SolutionDir)/Libraries/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\drbat\source\repos\newspace\SpaceInvadersProject\Libraries\lib;$(SolutionDir)/Libraries/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -134,7 +134,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;soil2-debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>C:\Users\Brandon\source\repos\SpaceInvadersProject\SpaceInvadersProject\Libraries\lib;$(SolutionDir)/Libraries/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\drbat\source\repos\newspace\SpaceInvadersProject\Libraries\lib;$(SolutionDir)/Libraries/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -182,8 +182,10 @@
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="losescreen.png" />
     <Image Include="textures\trainer.png" />
     <Image Include="textures\zoro.png" />
+    <Image Include="winscreen.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
