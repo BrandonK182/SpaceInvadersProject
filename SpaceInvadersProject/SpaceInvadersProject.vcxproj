@@ -182,10 +182,8 @@
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="losescreen.png" />
     <Image Include="textures\trainer.png" />
     <Image Include="textures\zoro.png" />
-    <Image Include="winscreen.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
