@@ -4,15 +4,18 @@
 
 #include <iostream>
 #include <vector>
-//test
 
 // Game-related State data
 SpriteRenderer* Renderer;
 GameObject* Player;
 GameObject* Enemy;
+GameObject* winScreen;
+GameObject* loseScreen;
 std::vector<GameObject*> enemies;
-const glm::vec2 PLAYER_SIZE(100.0f, 20.0f);
+const glm::vec2 PLAYER_SIZE(100.0f, 75.0f); // const glm::vec2 PLAYER_SIZE(100.0f, 20.0f);
 const glm::vec2 ENEMY_SIZE(75.0f, 75.0f);
+const glm::vec2 WINSCREEN_SIZE(800.0f, 600.0f);
+const glm::vec2 LOSESCREEN_SIZE(800.0f, 600.0f);
 const float PLAYER_VELOCITY(500.0f);
 const static int numRows = 10;
 const static int numCols = 10;
@@ -21,7 +24,7 @@ const static int numEnemyRows = 3;
 static int remaining = numEnemiesPerRow * numEnemyRows;
 const static float cooldownLength = 25;
 float cooldown = 0;
-float timer = 500;
+float timer = 50; // timer = # -> # default 500
 int direction = 2;
 //1 = left
 //2 = right
@@ -65,19 +68,23 @@ void Game::Init()
     // load textures
     ResourceManager::LoadTexture("textures/zoro.png", true, "enemy");
     ResourceManager::LoadTexture("textures/trainer.png", true, "player");
+    ResourceManager::LoadTexture("textures/winscreen.png", true, "winscreen");
+    ResourceManager::LoadTexture("textures/losescreen.png", true, "losescreen");
+
 
     level.Load("level.lvl", this->Width, this->Height / 2);
 
-
+    // player model
     glm::vec2 playerPos = glm::vec2(
         this->Width / 2.0f - PLAYER_SIZE.x / 2.0f,
         this->Height - PLAYER_SIZE.y
     );
     Player = new GameObject(playerPos, PLAYER_SIZE, ResourceManager::GetTexture("player"));
 
+    // enemy model
     glm::vec2 enemyPos = glm::vec2(
         0.0f,
-        this->Height -600.0f
+        this->Height - 600.0f
     );
 
     for (int i = 0; i < numEnemyRows; i++)
@@ -90,18 +97,32 @@ void Game::Init()
         enemyPos.x = 0.0f;
         enemyPos.y += 50.0f;
     }
+
+    // winscreen model
+    glm::vec2 winScreenPos = glm::vec2(
+        this->Width - WINSCREEN_SIZE.x,
+        this->Height - WINSCREEN_SIZE.y
+    );
+    winScreen = new GameObject(winScreenPos, WINSCREEN_SIZE, ResourceManager::GetTexture("winscreen"));
+
+    // losescreen model
+    glm::vec2 loseScreenPos = glm::vec2(
+        this->Width - LOSESCREEN_SIZE.x,
+        this->Height - LOSESCREEN_SIZE.y
+    );
+    loseScreen = new GameObject(winScreenPos, LOSESCREEN_SIZE, ResourceManager::GetTexture("losescreen"));
 }
 
 void Game::Update(float dt)
 {
     if (this->State == GAME_ACTIVE)
     {
-        switch(direction)
+        switch (direction)
         {
-        case 1:
+        case 1: // enemies move left
             for (int i = 0; i < enemies.size(); i++)
             {
-                enemies[i]->Position.x -= dt * 50;
+                enemies[i]->Position.x -= dt * 50; // dt * # -> # default 50
             }
             if (timer < 0)
             {
@@ -109,10 +130,10 @@ void Game::Update(float dt)
                 timer = 20;
             }
             break;
-        case 2:
+        case 2: // enemies move right
             for (int i = 0; i < enemies.size(); i++)
             {
-                enemies[i]->Position.x += dt * 50;
+                enemies[i]->Position.x += dt * 50; // dt * # -> # default 50
             }
             if (timer < 0)
             {
@@ -120,7 +141,7 @@ void Game::Update(float dt)
                 timer = 20;
             }
             break;
-        case 3:
+        case 3: // enemies move down then left
             for (int i = 0; i < enemies.size(); i++)
             {
                 enemies[i]->Position.y += dt * 100;
@@ -128,10 +149,10 @@ void Game::Update(float dt)
             if (timer < 0)
             {
                 direction = 1;
-                timer = 500;
+                timer = 100; // timer = # -> # default 500
             }
             break;
-        case 4:
+        case 4: // enemies move down then right
             for (int i = 0; i < enemies.size(); i++)
             {
                 enemies[i]->Position.y += dt * 100;
@@ -139,7 +160,7 @@ void Game::Update(float dt)
             if (timer < 0)
             {
                 direction = 2;
-                timer = 500;
+                timer = 100; // timer = # -> # default 500
             }
             break;
         }
@@ -149,14 +170,44 @@ void Game::Update(float dt)
             cooldown -= dt * 50;
         }
 
+        // if all enemies are dead, gamestate -> win
         if (remaining <= 0)
         {
             this->State = GAME_WIN;
-            std::cout << "trigger" << std::endl;
+            std::cout << "winscreen" << std::endl; //
         }
+
+        // if enemies touch player, automatically lose
+        float playerLeft = Player->Position.x;
+        float playerRight = Player->Position.x + PLAYER_SIZE.x;
+        bool sameLevel = false;
+        for (int i = 0; i < enemies.size(); i++)
+        {
+            //std::cout << Player->Position.y + PLAYER_SIZE.y << std::endl; // == 600
+            //std::cout << enemies[i]->Position.y + (numEnemyRows - 1) * ENEMY_SIZE.y << std::endl; //
+            if (Player->Position.y + PLAYER_SIZE.y <= enemies[i]->Position.y + (numEnemyRows - 1) * ENEMY_SIZE.y)
+            {
+                sameLevel = true;
+                std::cout << "sameLevel true" << std::endl; //
+            }
+        }
+        if (sameLevel == true)
+        {
+            for (int i = enemies.size() - 1; i >= 0; i--)
+            {
+                if (playerLeft < enemies[i]->Position.x && playerRight > enemies[i]->Position.x + ENEMY_SIZE.x)
+                {
+                    std::cout << "colliding" << std::endl; //
+                    this->State = GAME_LOSE;
+                }
+            }
+        }
+
+
         if (playerLives <= 0)
         {
             this->State = GAME_LOSE;
+            std::cout << "losescreen" << std::endl; //
         }
     }
     if (this->State == GAME_ACTIVE)
@@ -186,7 +237,7 @@ void Game::ProcessInput(float dt)
         {
             float playerCenter = Player->Position.x + (PLAYER_SIZE.x / 2);
             bool contact = false;
-            for (int i = enemies.size()-1; i >= 0; i--)
+            for (int i = enemies.size() - 1; i >= 0; i--)
             {
                 if (playerCenter > enemies[i]->Position.x && playerCenter < enemies[i]->Position.x + ENEMY_SIZE.x)
                 {
@@ -199,7 +250,7 @@ void Game::ProcessInput(float dt)
                     }
                 }
             }
-            if(cooldown <= 0)
+            if (cooldown <= 0)
                 cooldown = cooldownLength;
         }
     }
@@ -251,5 +302,13 @@ void Game::Render()
             if (!enemies[i]->Destroyed)
                 enemies[i]->Draw(*Renderer);
         }
+    }
+    if (this->State == GAME_WIN)
+    {
+        winScreen->Draw(*Renderer);
+    }
+    if (this->State == GAME_LOSE)
+    {
+        loseScreen->Draw(*Renderer);
     }
 }
