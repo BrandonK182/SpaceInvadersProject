@@ -66,8 +66,8 @@ void Game::Init()
     Shader shade = ResourceManager::GetShader("sprite");
     Renderer = new SpriteRenderer(shade);
     // load textures
-    ResourceManager::LoadTexture("textures/zoro.png", true, "enemy");
-    ResourceManager::LoadTexture("textures/trainer.png", true, "player");
+    ResourceManager::LoadTexture("textures/winscreen.png", true, "enemy"); //("textures/zoro.png", true, "enemy")
+    ResourceManager::LoadTexture("textures/winscreen.png", true, "player"); //("textures/trainer.png", true, "player")
     ResourceManager::LoadTexture("textures/winscreen.png", true, "winscreen");
     ResourceManager::LoadTexture("textures/losescreen.png", true, "losescreen");
 
@@ -86,7 +86,6 @@ void Game::Init()
         0.0f,
         this->Height - 600.0f
     );
-
     for (int i = 0; i < numEnemyRows; i++)
     {
         for (int j = 0; j < numEnemiesPerRow; j++)
@@ -95,7 +94,7 @@ void Game::Init()
             enemyPos.x += ENEMY_SIZE.x;
         }
         enemyPos.x = 0.0f;
-        enemyPos.y += 50.0f;
+        enemyPos.y += ENEMY_SIZE.y;
     }
 
     // winscreen model
@@ -144,7 +143,7 @@ void Game::Update(float dt)
         case 3: // enemies move down then left
             for (int i = 0; i < enemies.size(); i++)
             {
-                enemies[i]->Position.y += dt * 100;
+                enemies[i]->Position.y += dt * 200;
             }
             if (timer < 0)
             {
@@ -155,7 +154,7 @@ void Game::Update(float dt)
         case 4: // enemies move down then right
             for (int i = 0; i < enemies.size(); i++)
             {
-                enemies[i]->Position.y += dt * 100;
+                enemies[i]->Position.y += dt * 200;
             }
             if (timer < 0)
             {
@@ -180,12 +179,16 @@ void Game::Update(float dt)
         // if enemies touch player, automatically lose
         float playerLeft = Player->Position.x;
         float playerRight = Player->Position.x + PLAYER_SIZE.x;
-        bool sameLevel = false;
+        float playerTop = Player->Position.y;
+        //float enemyLeft = enemies[i]->Position.x;
+        //float enemyRight = enemies[i]->Position.x + ENEMY_SIZE.x;
+        //float enemyBot = enemies[i]->Position.y + ENEMY_SIZE.y;
+        bool sameLevel = false; //bool sameLevel = false;
         for (int i = 0; i < enemies.size(); i++)
         {
-            //std::cout << Player->Position.y + PLAYER_SIZE.y << std::endl; // == 600
+            //std::cout << playerTop << std::endl; // == 525
             //std::cout << enemies[i]->Position.y + (numEnemyRows - 1) * ENEMY_SIZE.y << std::endl; //
-            if (Player->Position.y + PLAYER_SIZE.y <= enemies[i]->Position.y + (numEnemyRows - 1) * ENEMY_SIZE.y)
+            if (playerTop <= enemies[i]->Position.y + ENEMY_SIZE.y)
             {
                 sameLevel = true;
                 std::cout << "sameLevel true" << std::endl; //
@@ -193,14 +196,24 @@ void Game::Update(float dt)
         }
         if (sameLevel == true)
         {
-            for (int i = enemies.size() - 1; i >= 0; i--)
+            for (int i = 0; i <= enemies.size() - 1; i++)
             {
-                if (playerLeft < enemies[i]->Position.x && playerRight > enemies[i]->Position.x + ENEMY_SIZE.x)
+                std::cout << playerTop << std::endl;
+                std::cout << enemies[i]->Position.y + ENEMY_SIZE.y << std::endl;
+                if (playerLeft >= enemies[i]->Position.x && playerLeft <= enemies[i]->Position.x + ENEMY_SIZE.x // if left edge is inside an enemy
+                    || playerRight >= enemies[i]->Position.x && playerRight <= enemies[i]->Position.x + ENEMY_SIZE.x) // or if right edge ^^^
                 {
-                    std::cout << "colliding" << std::endl; //
-                    this->State = GAME_LOSE;
+                    if (playerTop <= enemies[i]->Position.y + ENEMY_SIZE.y) // and top edge is past an enemy
+                    {
+                        if (!enemies[i]->Destroyed)
+                        {
+                            std::cout << "colliding" << std::endl; //
+                            this->State = GAME_LOSE;
+                        }
+                    }
                 }
             }
+            std::cout << std::endl;
         }
 
 
