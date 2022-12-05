@@ -183,37 +183,28 @@ void Game::Update(float dt)
         //float enemyLeft = enemies[i]->Position.x;
         //float enemyRight = enemies[i]->Position.x + ENEMY_SIZE.x;
         //float enemyBot = enemies[i]->Position.y + ENEMY_SIZE.y;
-        bool sameLevel = false; //bool sameLevel = false;
-        for (int i = 0; i < enemies.size(); i++)
-        {
-            //std::cout << playerTop << std::endl; // == 525
-            //std::cout << enemies[i]->Position.y + (numEnemyRows - 1) * ENEMY_SIZE.y << std::endl; //
-            if (playerTop <= enemies[i]->Position.y + ENEMY_SIZE.y)
-            {
-                sameLevel = true;
-                std::cout << "sameLevel true" << std::endl; //
-            }
-        }
-        if (sameLevel == true)
         {
             for (int i = 0; i <= enemies.size() - 1; i++)
             {
-                std::cout << playerTop << std::endl;
-                std::cout << enemies[i]->Position.y + ENEMY_SIZE.y << std::endl;
-                if (playerLeft >= enemies[i]->Position.x && playerLeft <= enemies[i]->Position.x + ENEMY_SIZE.x // if left edge is inside an enemy
-                    || playerRight >= enemies[i]->Position.x && playerRight <= enemies[i]->Position.x + ENEMY_SIZE.x) // or if right edge ^^^
+                if (!enemies[i]->Destroyed) // if enemy isnt destroyed
                 {
-                    if (playerTop <= enemies[i]->Position.y + ENEMY_SIZE.y) // and top edge is past an enemy
+                    if (enemies[i]->Position.y >= Height) // if enemy leaves screen
                     {
-                        if (!enemies[i]->Destroyed)
+                        std::cout << "passed you" << std::endl; //
+                        this->State = GAME_LOSE;
+                    }
+                    if (playerLeft >= enemies[i]->Position.x && playerLeft <= enemies[i]->Position.x + ENEMY_SIZE.x // if left edge is in an enemy
+                        || playerRight >= enemies[i]->Position.x && playerRight <= enemies[i]->Position.x + ENEMY_SIZE.x) // or if right edge is ^^^
+                    {
+                        if (playerTop <= enemies[i]->Position.y + ENEMY_SIZE.y) // and top edge is past an enemy's bottom
                         {
                             std::cout << "colliding" << std::endl; //
                             this->State = GAME_LOSE;
+
                         }
                     }
                 }
             }
-            std::cout << std::endl;
         }
 
 
