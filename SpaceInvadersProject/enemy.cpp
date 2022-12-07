@@ -97,3 +97,8 @@ void Enemy::setDownRight()
 { 
     direction = 4; 
 };
+
+void Enemy::destroy()
+{
+    Destroyed = true;
+};

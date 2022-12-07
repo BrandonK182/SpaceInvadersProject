@@ -160,11 +160,17 @@ void Game::ProcessInput(float dt)
         if (this->Keys[GLFW_KEY_SPACE])
         {
             bool contact = false;
+            //std::cout << contact << std::endl;
             for (int i = enemies.size() - 1; i >= 0; i--)
             {
                 if (!contact)
+                {
                     contact = thePlayer->shoot(enemies[i]);
+                    if (contact)
+                        remaining -= 1;
+                }    
             }
+            thePlayer->setCooldown();
         }
     }
     if (this->State == GAME_LOSE || this->State == GAME_WIN)
