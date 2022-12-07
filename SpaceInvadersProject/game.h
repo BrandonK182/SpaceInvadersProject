@@ -4,11 +4,17 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "GameLevel.h"
+#include <iostream>
+#include <vector>
+#include <glm/glm.hpp>
+#include "GameObject.h"
+#include "SpriteRenderer.h"
+#include "ResourceManager.h"
+#include "enemy.h"
+#include "player.h"
 
 enum GameState {
     GAME_ACTIVE,
-    GAME_MENU,
     GAME_WIN,
     GAME_LOSE
 };
@@ -21,9 +27,8 @@ class Game
 public:
     // game state
     GameState               State;	
-    bool                    Keys[1024];
+    bool                    Keys[1024]; //keys on keyboard inputs
     unsigned int            Width, Height;
-    GameLevel               level;
     // constructor/destructor
     Game(unsigned int width, unsigned int height);
     ~Game();

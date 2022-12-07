@@ -155,11 +155,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="GameLevel.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="player.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="SpriteRenderer.cpp" />
@@ -171,10 +172,11 @@
     <None Include="core.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="GameLevel.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Libraries\include\stb\stb_image.h" />
+    <ClInclude Include="player.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="shader.h" />
@@ -182,7 +184,9 @@
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="textures\losescreen.png" />
     <Image Include="textures\trainer.png" />
+    <Image Include="textures\winscreen.png" />
     <Image Include="textures\zoro.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
