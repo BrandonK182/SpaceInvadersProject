@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 #endif
     glfwWindowHint(GLFW_RESIZABLE, false);
 
-    GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Breakout", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Space Invaders", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     // glad: load all OpenGL function pointers
