@@ -5,9 +5,10 @@ SpriteRenderer* Renderer;
 Player* thePlayer;
 GameObject* winScreen;
 GameObject* loseScreen;
+GameObject* background;
 std::vector<Enemy*> enemies;
-const glm::vec2 PLAYER_SIZE(100.0f, 75.0f); // const glm::vec2 PLAYER_SIZE(100.0f, 20.0f);
-const glm::vec2 ENEMY_SIZE(75.0f, 75.0f);
+const glm::vec2 PLAYER_SIZE(100.0f, 120.0f); // const glm::vec2 PLAYER_SIZE(100.0f, 20.0f);
+const glm::vec2 ENEMY_SIZE(100.0f, 100.0f);
 const glm::vec2 WINSCREEN_SIZE(800.0f, 600.0f);
 const glm::vec2 LOSESCREEN_SIZE(800.0f, 600.0f);
 const float PLAYER_VELOCITY(500.0f);
@@ -55,6 +56,7 @@ void Game::Init()
     ResourceManager::LoadTexture("textures/trainer.png", true, "player"); //("textures/trainer.png", true, "player")
     ResourceManager::LoadTexture("textures/winscreen.png", true, "winscreen");
     ResourceManager::LoadTexture("textures/losescreen.png", true, "losescreen");
+    ResourceManager::LoadTexture("textures/AlabasterIcelands.png", false, "background");
 
     // player model
     glm::vec2 playerPos = glm::vec2(
@@ -87,11 +89,9 @@ void Game::Init()
     winScreen = new GameObject(winScreenPos, WINSCREEN_SIZE, ResourceManager::GetTexture("winscreen"));
 
     // losescreen model
-    glm::vec2 loseScreenPos = glm::vec2(
-        this->Width - LOSESCREEN_SIZE.x,
-        this->Height - LOSESCREEN_SIZE.y
-    );
-    loseScreen = new GameObject(winScreenPos, LOSESCREEN_SIZE, ResourceManager::GetTexture("losescreen"));
+    loseScreen = new GameObject(winScreenPos, WINSCREEN_SIZE, ResourceManager::GetTexture("losescreen"));
+
+    background = new GameObject(winScreenPos, WINSCREEN_SIZE, ResourceManager::GetTexture("background"));
 }
 
 void Game::Update(float dt)
@@ -160,7 +160,6 @@ void Game::ProcessInput(float dt)
         if (this->Keys[GLFW_KEY_SPACE])
         {
             bool contact = false;
-            //std::cout << contact << std::endl;
             for (int i = enemies.size() - 1; i >= 0; i--)
             {
                 if (!contact)
@@ -194,6 +193,7 @@ void Game::Render()
 {
     if (this->State == GAME_ACTIVE)
     {
+        background->Draw(*Renderer);
         thePlayer->Draw(*Renderer);
         for (int i = 0; i < enemies.size(); i++)
         {

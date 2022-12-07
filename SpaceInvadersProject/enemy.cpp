@@ -12,7 +12,7 @@ Enemy::Enemy(glm::vec2 pos, glm::vec2 size, Texture2D sprite, glm::vec3 color, g
     IsSolid = false;
     Destroyed = false;
     direction = 2;
-    timer = 333;
+    timer = 275;
 };
 
 void Enemy::setDefault()
@@ -20,7 +20,7 @@ void Enemy::setDefault()
     Position = initialPos;
     Destroyed = false;
     direction = 2;
-    timer = 333;
+    timer = 275;
 };
 
 void Enemy::move(float dt)
@@ -48,7 +48,7 @@ void Enemy::move(float dt)
         if (timer < 0)
         {
             setLeft();
-            timer = 400; // timer = # -> # default 500
+            timer = 300; // timer = # -> # default 500
         }
         break;
     case 4: // enemies move down then right
@@ -56,7 +56,7 @@ void Enemy::move(float dt)
         if (timer < 0)
         {
             setRight();
-            timer = 400; // timer = # -> # default 500
+            timer = 300; // timer = # -> # default 500
         }
         break;
     }

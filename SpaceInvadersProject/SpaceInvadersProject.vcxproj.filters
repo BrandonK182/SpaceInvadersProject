@@ -105,5 +105,14 @@
     <Image Include="textures\losescreen.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="textures\player2.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="textures\enemy.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="textures\AlabasterIcelands.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

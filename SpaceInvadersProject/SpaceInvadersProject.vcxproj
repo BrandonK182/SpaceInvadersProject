@@ -184,7 +184,10 @@
     <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="textures\AlabasterIcelands.png" />
+    <Image Include="textures\enemy.png" />
     <Image Include="textures\losescreen.png" />
+    <Image Include="textures\player2.png" />
     <Image Include="textures\trainer.png" />
     <Image Include="textures\winscreen.png" />
     <Image Include="textures\zoro.png" />
